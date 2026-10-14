@@ -1,0 +1,12 @@
+pluginManagement {
+    plugins {
+        id 'net.serenity-bdd.serenity-gradle-plugin' version serenityPluginVersion
+    }
+}
+
+plugins {
+    // Descarga JDK 21 automáticamente si no lo tienes instalado
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
+}
+
+rootProject.name = 'PokedexAutomationUI'

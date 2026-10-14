@@ -1,0 +1,85 @@
+// Dependencias que necesita Gradle para generar los reportes (no las usa el código de pruebas)
+buildscript {
+    repositories { mavenCentral() }
+    dependencies {
+        // Reporte HTML de una sola página de Serenity
+        classpath "net.serenity-bdd:serenity-single-page-report:${serenityVersion}"
+    }
+}
+
+plugins {
+    id 'java'
+    // La versión viene de settings.gradle (pluginManagement)
+    id 'net.serenity-bdd.serenity-gradle-plugin'
+}
+
+group = 'com.jandtocode'
+version = '1.0-SNAPSHOT'
+
+// Compila y ejecuta con Java 21, sin importar el JDK instalado en la máquina
+java {
+    toolchain { languageVersion = JavaLanguageVersion.of(21) }
+}
+
+repositories { mavenCentral() }
+
+dependencies {
+    // Serenity: va en implementation porque tasks, questions y userinterfaces viven en src/main.
+    // El BOM fija la misma versión para todos los módulos de Serenity.
+    implementation platform("net.serenity-bdd:serenity-bom:${serenityVersion}")
+    implementation 'net.serenity-bdd:serenity-core'
+    implementation 'net.serenity-bdd:serenity-screenplay'
+    implementation 'net.serenity-bdd:serenity-screenplay-webdriver'
+    implementation 'net.serenity-bdd:serenity-ensure'
+
+    // Cucumber + JUnit Platform: solo en test (runner y stepdefinitions).
+    // Sin versiones: las fija el BOM de Serenity, que ya trae una combinación compatible.
+    testImplementation 'net.serenity-bdd:serenity-cucumber'
+    testImplementation 'io.cucumber:cucumber-junit-platform-engine'
+    testImplementation 'org.junit.platform:junit-platform-suite'
+    testRuntimeOnly    'org.junit.platform:junit-platform-launcher'
+
+    // Logging en tiempo de ejecución
+    runtimeOnly 'ch.qos.logback:logback-classic:1.5.18'
+}
+
+// Evita problemas con tildes y caracteres especiales al compilar
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+
+    // Gradle se saltaría los tests si nada cambió en el código.
+    // Una automatización UI debe ejecutarse siempre.
+    outputs.upToDateWhen { false }
+
+    // Pasa a las pruebas solo las propiedades -D con estos prefijos (portable entre sistemas operativos).
+    // 'pages.' permite sobrescribir la URL: -Dpages.home=http://otra-url
+    systemProperties System.properties.findAll { k, v ->
+        ['webdriver.', 'headless.', 'environment', 'cucumber.', 'serenity.', 'junit.', 'pages.']
+                .any { k.toString().startsWith(it) }
+    }
+
+    // Navegador por defecto: Chrome, salvo que pases -Denvironment=firefox, edge o safari
+    systemProperty 'environment', System.getProperty('environment', 'chrome')
+
+    // Salida completa en consola solo cuando la pides: ./gradlew test -Pverbose
+    testLogging.showStandardStreams = project.hasProperty('verbose')
+
+    // Genera el reporte de Serenity aunque los tests fallen
+    finalizedBy 'aggregate'
+}
+
+serenity {
+    // Paquete raíz de las pruebas, usado para organizar el reporte
+    testRoot = 'com.jandtocode'
+    // Carpeta de los .feature, usada para el reporte de requerimientos
+    requirementsDir = 'src/test/resources/features'
+    // Formatos de reporte adicionales
+    reports = ['single-page-html']
+}
+
+// Tareas que se ejecutan con solo ./gradlew (aggregate corre por el finalizedBy)
+defaultTasks 'clean', 'test'
