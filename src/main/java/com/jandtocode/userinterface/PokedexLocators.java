@@ -6,6 +6,8 @@ import org.openqa.selenium.By;
 
 public class PokedexLocators {
 
+    public static final String SIN_RESULTADO = "???";
+
     public static final Target CAMPO_BUSQUEDA = Target
             .the("campo de búsqueda")
             .located(By.cssSelector("input.input-buscador"));
