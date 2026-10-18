@@ -43,5 +43,6 @@ public class EncontrarPokemonBuscador implements Task {
                 WaitUntil.the(NOMBRE_POKEMON, not(containsText(SIN_RESULTADO)))
                         .forNoMoreThan(ESPERA_MAXIMA_SEGUNDOS).seconds()
         );
+
     }
 }
