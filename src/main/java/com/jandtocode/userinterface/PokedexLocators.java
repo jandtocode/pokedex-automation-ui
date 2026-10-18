@@ -19,4 +19,8 @@ public class PokedexLocators {
     public static final Target NOMBRE_POKEMON = Target
             .the("nombre del Pokémon")
             .located(By.cssSelector("span.nombre-pokemon"));
+
+    public static final Target EVOLUCION_POKEMON = Target
+            .the("evolución del Pokémon")
+            .located(By.cssSelector("td.dato-evolucion"));
 }

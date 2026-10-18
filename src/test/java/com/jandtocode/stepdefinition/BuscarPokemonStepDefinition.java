@@ -1,13 +1,19 @@
 package com.jandtocode.stepdefinition;
 
+import com.jandtocode.model.BusquedaPokemon;
+import com.jandtocode.question.EvolucionPokemonMostrada;
+import com.jandtocode.question.NombrePokemoMostrado;
 import com.jandtocode.task.AbrirNavegadorPokedex;
 import com.jandtocode.task.EncontrarPokemonBuscador;
 import io.cucumber.java.es.Cuando;
 import io.cucumber.java.es.Dado;
 import io.cucumber.java.es.Entonces;
+import net.serenitybdd.screenplay.ensure.Ensure;
 
+import static net.serenitybdd.screenplay.GivenWhenThen.seeThat;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorCalled;
 import static net.serenitybdd.screenplay.actors.OnStage.theActorInTheSpotlight;
+import static org.hamcrest.Matchers.equalToIgnoringCase;
 
 public class BuscarPokemonStepDefinition {
 
@@ -24,13 +30,16 @@ public class BuscarPokemonStepDefinition {
 
     }
     @Entonces("el nombre mostrado corresponde a {string}")
-    public void el_nombre_mostrado_corresponde_a(String string) {
-        // Write code here that turns the phrase above into concrete actions
-        throw new io.cucumber.java.PendingException();
+    public void el_nombre_mostrado_corresponde_a(String nombrePokemon) {
+        String nombreEsperado = BusquedaPokemon.desde(nombrePokemon).nombreEnPantalla();
+       theActorInTheSpotlight().should(
+               seeThat(new NombrePokemoMostrado(), equalToIgnoringCase(nombreEsperado))
+       );
     }
     @Entonces("la evolución mostrada es {string}")
-    public void la_evolucion_mostrada_es(String string) {
-        // Write code here that turns the phrase above into concrete actions
-        throw new io.cucumber.java.PendingException();
+    public void la_evolucion_mostrada_es(String esperado) {
+        theActorInTheSpotlight().attemptsTo(
+                Ensure.that(EvolucionPokemonMostrada.enLaPantalla()).isEqualToIgnoringCase(esperado)
+        );
     }
 }

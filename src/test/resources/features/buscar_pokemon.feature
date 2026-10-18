@@ -14,7 +14,7 @@
       Ejemplos:
         | pokemon        | evolucion  |
         | haunter        | Gengar     |
-#        | Tauros         | Ninguna    |
-#        | nidoran-macho  | nidorino   |
-#        | nidoran-hembra | nidorina   |
-#        | Charmander     | Charmeleon |
+        | Tauros         | Ninguna    |
+        | nidoran-macho  | nidorino   |
+        | nidoran-hembra | nidorina   |
+        | Charmander     | Charmeleon |
