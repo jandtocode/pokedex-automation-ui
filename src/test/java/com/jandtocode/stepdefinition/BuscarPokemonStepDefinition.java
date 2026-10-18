@@ -5,6 +5,7 @@ import com.jandtocode.question.EvolucionPokemonMostrada;
 import com.jandtocode.question.NombrePokemoMostrado;
 import com.jandtocode.task.AbrirNavegadorPokedex;
 import com.jandtocode.task.EncontrarPokemonBuscador;
+import com.jandtocode.task.SeleccionarPokemonBotones;
 import io.cucumber.java.es.Cuando;
 import io.cucumber.java.es.Dado;
 import io.cucumber.java.es.Entonces;
@@ -29,6 +30,16 @@ public class BuscarPokemonStepDefinition {
         );
 
     }
+
+    @Cuando("selecciona el Pokémon {string} con los botones de la Pokédex")
+    public void selecciona_el_pokemon_con_los_botones_de_la_pokedex(String nombre) {
+        theActorInTheSpotlight().attemptsTo(
+                SeleccionarPokemonBotones.llamado(nombre)
+        );
+    }
+
+
+
     @Entonces("el nombre mostrado corresponde a {string}")
     public void el_nombre_mostrado_corresponde_a(String nombrePokemon) {
         String nombreEsperado = BusquedaPokemon.desde(nombrePokemon).nombreEnPantalla();
